@@ -1,6 +1,10 @@
-import * as React from 'react';
-import * as PropTypes from 'prop-types';
-import { matchDescriptor, matchWidthDescriptor, matchPixelDescriptor } from './matcher';
+import * as React from "react";
+import * as PropTypes from "prop-types";
+import {
+  matchDescriptor,
+  matchWidthDescriptor,
+  matchPixelDescriptor,
+} from "./matcher";
 
 export interface Size {
   size: string;
@@ -13,6 +17,7 @@ export interface Props {
   className?: string;
   srcSet?: any;
   sizes?: Size[];
+  onRef?: (ref: HTMLImageElement) => void;
 }
 
 export default class Image extends React.PureComponent<Props> {
@@ -23,18 +28,23 @@ export default class Image extends React.PureComponent<Props> {
     className: PropTypes.string,
     srcSet: PropTypes.objectOf((props, propName, componentName) => {
       if (!matchDescriptor(propName)) {
-        return new Error(`Invalid prop '${propName}' supplied to '${componentName}'. Validation failed.`);
+        return new Error(
+          `Invalid prop '${propName}' supplied to '${componentName}'. Validation failed.`,
+        );
       }
       return null;
     }),
-    sizes: PropTypes.arrayOf(PropTypes.shape({
-      size: PropTypes.string.isRequired,
-      mediaCondition: PropTypes.string,
-    })),
+    sizes: PropTypes.arrayOf(
+      PropTypes.shape({
+        size: PropTypes.string.isRequired,
+        mediaCondition: PropTypes.string,
+      }),
+    ),
+    onRef: PropTypes.func,
   };
 
   static readonly defaultProps = {
-    alt: '', // it indicates this image is not a key part of the content
+    alt: "", // it indicates this image is not a key part of the content
   };
 
   readonly widthDescriptorOnly: boolean;
@@ -42,25 +52,35 @@ export default class Image extends React.PureComponent<Props> {
   constructor(props) {
     super(props);
 
-    this.widthDescriptorOnly = Object.keys(props.srcSet).every((descriptor) => matchWidthDescriptor(descriptor));
+    this.widthDescriptorOnly = Object.keys(props.srcSet).every(descriptor =>
+      matchWidthDescriptor(descriptor),
+    );
   }
 
   buildSrcSet() {
-    const matcher = this.widthDescriptorOnly ? matchWidthDescriptor : matchPixelDescriptor;
-    return Object.keys(this.props.srcSet)
-      .filter(matcher)
-      .map(descriptor => `${this.props.srcSet[descriptor]} ${descriptor}`)
-      .join(',') || undefined;
+    const matcher = this.widthDescriptorOnly
+      ? matchWidthDescriptor
+      : matchPixelDescriptor;
+    return (
+      Object.keys(this.props.srcSet)
+        .filter(matcher)
+        .map(descriptor => `${this.props.srcSet[descriptor]} ${descriptor}`)
+        .join(",") || undefined
+    );
   }
 
   buildSizes() {
     if (this.props.sizes && this.widthDescriptorOnly) {
-      return this.props.sizes.map((size) => {
-        if (size.mediaCondition) {
-          return `${size.mediaCondition} ${size.size}`;
-        }
-        return `${size.size}`;
-      }).join(',') || undefined;
+      return (
+        this.props.sizes
+          .map(size => {
+            if (size.mediaCondition) {
+              return `${size.mediaCondition} ${size.size}`;
+            }
+            return `${size.size}`;
+          })
+          .join(",") || undefined
+      );
     }
     return undefined;
   }
@@ -73,6 +93,7 @@ export default class Image extends React.PureComponent<Props> {
         src={this.props.src}
         srcSet={this.buildSrcSet()}
         sizes={this.buildSizes()}
+        ref={this.props.onRef}
       />
     );
   }
