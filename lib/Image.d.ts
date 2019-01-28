@@ -11,6 +11,8 @@ export interface Props {
     srcSet?: any;
     sizes?: Size[];
     webp?: boolean;
+    webpSrc?: string;
+    webpSrcSet?: any;
     onRef?: (ref: HTMLImageElement) => void;
 }
 export default class Image extends React.PureComponent<Props> {
@@ -19,6 +21,9 @@ export default class Image extends React.PureComponent<Props> {
         alt: PropTypes.Requireable<string>;
         className: PropTypes.Requireable<string>;
         srcSet: PropTypes.Requireable<{
+            [x: string]: {};
+        }>;
+        webpSrcSet: PropTypes.Requireable<{
             [x: string]: {};
         }>;
         sizes: PropTypes.Requireable<(PropTypes.InferProps<{
