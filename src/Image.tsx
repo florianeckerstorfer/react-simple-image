@@ -67,8 +67,8 @@ export default class Image extends React.PureComponent<Props> {
     );
   }
 
-  replaceWithWebp(name: string) {
-    return name.replace(/(\.(jpg|jpeg|png|gif))/, ".webp");
+  replaceWithWebp(name?: string) {
+    return name ? name.replace(/(\.(jpg|jpeg|png|gif))/, ".webp") : name;
   }
 
   buildSrcSet(webp: boolean = false) {

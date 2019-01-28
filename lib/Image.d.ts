@@ -37,7 +37,7 @@ export default class Image extends React.PureComponent<Props> {
     };
     readonly widthDescriptorOnly: boolean;
     constructor(props: any);
-    replaceWithWebp(name: string): string;
+    replaceWithWebp(name?: string): string | undefined;
     buildSrcSet(webp?: boolean): string | undefined;
     buildSizes(): string | undefined;
     renderImg(): JSX.Element;
