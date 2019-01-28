@@ -17,13 +17,13 @@ export interface Props {
   className?: string;
   srcSet?: any;
   sizes?: Size[];
+  webp?: boolean;
   onRef?: (ref: HTMLImageElement) => void;
 }
 
 export default class Image extends React.PureComponent<Props> {
   static readonly propTypes = {
     src: PropTypes.string.isRequired,
-
     alt: PropTypes.string,
     className: PropTypes.string,
     srcSet: PropTypes.objectOf((props, propName, componentName) => {
@@ -40,6 +40,7 @@ export default class Image extends React.PureComponent<Props> {
         mediaCondition: PropTypes.string,
       }),
     ),
+    webp: PropTypes.bool,
     onRef: PropTypes.func,
   };
 
@@ -57,14 +58,25 @@ export default class Image extends React.PureComponent<Props> {
     );
   }
 
-  buildSrcSet() {
+  replaceWithWebp(name: string) {
+    return name.replace(/(\.(jpg|jpeg|png|gif))/, ".webp");
+  }
+
+  buildSrcSet(webp: boolean = false) {
     const matcher = this.widthDescriptorOnly
       ? matchWidthDescriptor
       : matchPixelDescriptor;
     return (
       Object.keys(this.props.srcSet)
         .filter(matcher)
-        .map(descriptor => `${this.props.srcSet[descriptor]} ${descriptor}`)
+        .map(
+          descriptor =>
+            `${
+              webp
+                ? this.replaceWithWebp(this.props.srcSet[descriptor])
+                : this.props.srcSet[descriptor]
+            } ${descriptor}`,
+        )
         .join(",") || undefined
     );
   }
@@ -85,7 +97,7 @@ export default class Image extends React.PureComponent<Props> {
     return undefined;
   }
 
-  render() {
+  renderImg() {
     return (
       <img
         alt={this.props.alt}
@@ -96,5 +108,29 @@ export default class Image extends React.PureComponent<Props> {
         ref={this.props.onRef}
       />
     );
+  }
+
+  renderWebp() {
+    return (
+      <source
+        type="image/webp"
+        className={this.props.className}
+        src={this.replaceWithWebp(this.props.src)}
+        srcSet={this.buildSrcSet(true)}
+        sizes={this.buildSizes()}
+      />
+    );
+  }
+
+  render() {
+    if (this.props.webp) {
+      return (
+        <picture>
+          {this.renderWebp()}
+          {this.renderImg()}
+        </picture>
+      );
+    }
+    return this.renderImg();
   }
 }

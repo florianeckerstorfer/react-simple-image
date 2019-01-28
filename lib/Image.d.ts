@@ -10,6 +10,7 @@ export interface Props {
     className?: string;
     srcSet?: any;
     sizes?: Size[];
+    webp?: boolean;
     onRef?: (ref: HTMLImageElement) => void;
 }
 export default class Image extends React.PureComponent<Props> {
@@ -24,6 +25,7 @@ export default class Image extends React.PureComponent<Props> {
             size: PropTypes.Validator<string>;
             mediaCondition: PropTypes.Requireable<string>;
         }> | null)[]>;
+        webp: PropTypes.Requireable<boolean>;
         onRef: PropTypes.Requireable<(...args: any[]) => any>;
     };
     static readonly defaultProps: {
