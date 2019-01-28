@@ -11,7 +11,6 @@ export interface Props {
     srcSet?: any;
     sizes?: Size[];
     webp?: boolean;
-    webpSrc?: string;
     webpSrcSet?: any;
     onRef?: (ref: HTMLImageElement) => void;
 }

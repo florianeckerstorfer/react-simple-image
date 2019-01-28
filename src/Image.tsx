@@ -18,7 +18,6 @@ export interface Props {
   srcSet?: any;
   sizes?: Size[];
   webp?: boolean;
-  webpSrc?: string;
   webpSrcSet?: any;
   onRef?: (ref: HTMLImageElement) => void;
 }
@@ -127,7 +126,6 @@ export default class Image extends React.PureComponent<Props> {
       <source
         type="image/webp"
         className={this.props.className}
-        src={this.props.webpSrc || this.replaceWithWebp(this.props.src)}
         srcSet={this.buildSrcSet(true)}
         sizes={this.buildSizes()}
       />

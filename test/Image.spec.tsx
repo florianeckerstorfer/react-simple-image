@@ -145,7 +145,6 @@ describe("Image", () => {
       assert(html.startsWith("<picture"));
       assert(html.includes("<source"));
       assert(html.includes('alt="example"'));
-      assert(html.includes('src="example-small.webp"'));
       assert(
         html.includes(
           'srcSet="example-small.webp 360w,example-middle.webp 720w,example-large.webp 1200w"',
