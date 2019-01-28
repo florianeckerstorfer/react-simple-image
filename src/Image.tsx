@@ -83,7 +83,8 @@ export default class Image extends React.PureComponent<Props> {
           descriptor =>
             `${
               webp
-                ? this.props.webpSrcSet[descriptor] ||
+                ? (this.props.webpSrcSet &&
+                    this.props.webpSrcSet[descriptor]) ||
                   this.replaceWithWebp(this.props.srcSet[descriptor])
                 : this.props.srcSet[descriptor]
             } ${descriptor}`,
