@@ -18,6 +18,8 @@ export interface Props {
   srcSet?: any;
   sizes?: Size[];
   webp?: boolean;
+  webpSrc?: string;
+  webpSrcSet?: any;
   onRef?: (ref: HTMLImageElement) => void;
 }
 
@@ -27,6 +29,14 @@ export default class Image extends React.PureComponent<Props> {
     alt: PropTypes.string,
     className: PropTypes.string,
     srcSet: PropTypes.objectOf((props, propName, componentName) => {
+      if (!matchDescriptor(propName)) {
+        return new Error(
+          `Invalid prop '${propName}' supplied to '${componentName}'. Validation failed.`,
+        );
+      }
+      return null;
+    }),
+    webpSrcSet: PropTypes.objectOf((props, propName, componentName) => {
       if (!matchDescriptor(propName)) {
         return new Error(
           `Invalid prop '${propName}' supplied to '${componentName}'. Validation failed.`,
@@ -73,7 +83,8 @@ export default class Image extends React.PureComponent<Props> {
           descriptor =>
             `${
               webp
-                ? this.replaceWithWebp(this.props.srcSet[descriptor])
+                ? this.props.webpSrcSet[descriptor] ||
+                  this.replaceWithWebp(this.props.srcSet[descriptor])
                 : this.props.srcSet[descriptor]
             } ${descriptor}`,
         )
@@ -115,7 +126,7 @@ export default class Image extends React.PureComponent<Props> {
       <source
         type="image/webp"
         className={this.props.className}
-        src={this.replaceWithWebp(this.props.src)}
+        src={this.props.webpSrc || this.replaceWithWebp(this.props.src)}
         srcSet={this.buildSrcSet(true)}
         sizes={this.buildSizes()}
       />
